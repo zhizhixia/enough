@@ -1,5 +1,7 @@
 # VoltAgent/awesome-agent-skills PR 草稿（暂缓提交）
 
+> **v0.1 历史草稿。** 内含的“五道门禁”和“复用优先”描述不代表 v0.2 默认行为；当前定位以 [README](../README.md) 和 `skills/enough/SKILL.md` 为准。
+
 ## 提交状态：等待社区采用证据
 
 VoltAgent 的 CONTRIBUTING 明确要求：**“Brand new skills that were just created are not accepted. Give your skill time to mature and gain users before submitting.”**
