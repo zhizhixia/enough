@@ -1,4 +1,6 @@
-# 我写了一个 300 行的 AI 开发流程 Skill：先找现成轮子，别急着写代码
+# 我写了一个轻量的 AI 开发流程 Skill：先看已有能力，再决定是否动手
+
+> **v0.1 历史发布稿。** 保留旧版“先搜索、五道门禁、固定体积”的定位以便追溯；v0.2 当前定位以 [README](../README.md) 和 `skills/enough/SKILL.md` 为准：FAST / NORMAL / DEEP、真正选型才外部搜索、复杂设计才审批、验证按证据决定。
 
 > 适用：用 Codex / Claude Code / OpenCode 写代码，但觉得 AI“不太靠谱”的人。
 

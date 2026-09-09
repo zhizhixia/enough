@@ -4,122 +4,109 @@
 
 [中文版](README.md)
 
-Enough is a Skill for AI coding assistants (Codex, Claude Code, OpenCode, and others) — think of it as an executable development-process guide. Once installed, your AI follows a proven workflow instead of coding by impulse. It takes 10 seconds to install and weighs in at just over 300 lines, with zero configuration required for beginners.
+Enough is a Skill for AI coding assistants (Codex, Claude Code, OpenCode, and others). It uses risk-based routing, reuse-first decisions, and evidence-driven delivery to get a software task to “enough and shippable” — without coding on impulse or turning every small edit into a heavy process.
 
 ## Why does this exist?
 
 If you regularly ask AI to build features, you have probably hit one of these:
 
-**1. Wasted effort.** The AI happily writes a pile of code, and later you discover GitHub already had a project doing almost exactly the same thing. Adapting existing code takes half the time of building from scratch.
+**1. Wasted effort.** The AI writes a pile of code, then you find an existing project or module already solves the problem.
 
-**2. Wrong direction, discovered too late.** The AI starts coding without clarifying what you want, or dumps five questions on you at once. Halfway through, you realize the direction was wrong.
+**2. Wrong direction, discovered too late.** The AI starts before clarifying the constraints that actually change the scope.
 
-**3. Everything at once, nothing works.** The AI spreads across ten modules and looks impressively fast — until integration day, when the main flow does not work at all and every module is a castle in the air.
+**3. Everything at once, nothing works.** The AI spreads across ten modules; on integration day, the main flow does not work at all.
 
-**4. "Build succeeded" is not "it works".** The AI says "all tests pass", but the tests are superficial, and the moment you actually run the program it crashes.
+**4. “Build succeeded” is not “it works”.** The AI says “all tests pass,” but only compilation or mocks passed; the real path crashes.
 
-**5. Release incidents.** Secrets written into code, temp files committed, debug settings left on — discovered only after shipping.
+**5. Release incidents.** Secrets in code, temp files in the repository, debug settings left on — discovered after shipping.
 
-**6. The same bug, forever.** The AI keeps guessing at the same issue, fixing one break and causing another, never stopping to find the root cause.
+**6. The same bug, forever.** The AI keeps guessing at one issue, fixing one break and causing another without stopping to find the cause.
 
-Enough exists to solve exactly these problems. It turns the habits of a reliable engineer into a workflow the AI can follow.
+**7. Process too heavy.** A typo gets research, design, and a full regression suite; time goes to ceremony instead of results.
+
+**8. Tests for tests’ sake.** Brittle tests are added for “coverage” or mandatory TDD without proving a real risk.
+
+Enough turns the judgment of a reliable engineer into a workflow an AI can follow: pause when needed, act when needed, and stop when the evidence is sufficient.
 
 ## Core philosophy
 
-The model's capability is enough. The open-source wheels are enough. Enough's belief is simple: what development lacks is never more capability — only timely guidance at the critical moments.
+The model is capable enough, and the open-source ecosystem — including what is already in your project — is rich enough. Enough does not teach the AI how to write every line. At failure-prone points it asks the AI to **inspect existing capability first, choose a path by risk, search and design only when warranted, and accept work with proportionate evidence.**
 
-Today's large language models are powerful enough to build an entire codebase on their own — and powerful enough to "conveniently" reinvent the wheel. They are confident enough to write secrets straight into code and push `.env` files all the way to GitHub.
-
-What they lack is not capability, but checkpoints at critical moments: has an open-source solution been evaluated before starting? Has the design spec passed review before coding? Has a minimal working slice been proven before full-scale development? Is the acceptance evidence sufficient before declaring completion? Have sensitive data and temporary artifacts been cleaned before release?
-
-Enough is that gatekeeper. It does not teach the AI how to write code — that needs no teaching. It simply makes the AI pause for a second at the points where things most often go wrong: reuse first, approve first, verify first, check first.
-
-| Critical moment | Gatekeeping question | Corresponding gate |
-| --- | --- | --- |
-| Before starting | Has an open-source solution been evaluated? | Reuse decision |
-| Before coding | Has the design spec passed review? | Design approval |
-| Before full-scale work | Has a minimal working slice been proven? | Vertical slice |
-| Before claiming done | Is the acceptance evidence sufficient? | Acceptance evidence |
-| Before release | Are sensitive data and temp artifacts cleaned? | Release check |
-
-## What it is
-
-There are already heavyweight AI development methodologies (Superpowers, Spec Kit, Trellis, etc.). Enough differs:
-
-- **It is an orchestrator**, not a new set of wheels. It owns the sequence, the decision gates, and the quality bar; the actual work is delegated to capabilities you already have.
-- **It is tiny**: just 4 files and 300+ lines. Copy it in, no dependencies, no changes to your toolchain, 10-second install.
-- **It is beginner-friendly**: zero configuration, no framework knowledge required. It explains each step in plain language, and you only answer one or two questions it asks.
-- **It is tool-agnostic**: with or without Trellis, with or without CodeGraph — it works either way, degrading to a simplified flow when a capability is missing.
-
-The name: Enough — not a resigned "good enough", but a clear-eyed "we already have enough". The model's capability is enough. The open-source ecosystem is enough. What is missing is never more capability, only the right nudge at the critical moments.
+| Question | Enough’s default |
+| --- | --- |
+| What comes first? | Inspect the current project’s modules, dependencies, interfaces, tests, and decisions |
+| When do we search outside? | Only for a new project, an important dependency/capability choice, or a real adopt-vs-build tradeoff |
+| When is design approval needed? | For complex work, new projects, important models/contracts, or security and data-boundary changes |
+| How do we verify? | Separately decide what needs proof, whether current evidence is enough, whether a permanent test is worth it, and whether TDD helps |
+| When do we stop? | When approved acceptance items have sufficient evidence, no blocker remains, and limits are disclosed |
 
 ## How it works
 
-### Step one: classify the task
+### Start with three risk tracks
 
-Not every task needs the full workflow. Enough uses three tracks:
+Not every task follows the same sequence. Enough chooses a path from failure impact, blast radius, reversibility, uncertainty, and external-state impact; file type and task length alone do not decide it.
 
-| Track | Tasks | Handling |
-| --- | --- | --- |
-| 🐇 Fast path | Typo fixes, small local edits | Do it directly, no ceremony |
-| 🏗️ Standard path | New projects, features, cross-module changes | Full workflow |
-| 🚨 High-risk path | Money, accounts, privacy, external writes, deployments, industrial equipment | Full workflow + extra safeguards (dry run, rollback, small canary first) |
+| Track | Suitable work | What happens | What is not the default |
+| --- | --- | --- | --- |
+| 🐇 **FAST** | Local, low-impact, reversible changes with clear acceptance | Inspect the change and context, implement, then run the nearest native check or smoke test | External evaluation, formal design, permanent new tests, a full review chain |
+| 🏗️ **NORMAL** | Ordinary features or fixes with clear boundaries and controlled risk | State short acceptance and credible failure modes, reuse existing evidence, complete the affected real path, then independently accept it | Strict TDD, per-function tests, fixed dual review, full-stack regression |
+| 🚨 **DEEP** | High-impact or hard-to-reverse work, uncertain key contracts, concurrency, auth/privacy, migrations, or external state | Strengthen design, exceptional-case evidence, controlled environments, and recovery for the specific risk | Unauthorized real operations or mechanically enabling every “advanced” step |
 
-### Step two: the eight-step workflow
+### Reuse first — not search for search’s sake
 
-1. **Open-source evaluation** (GitHub reuse gate) — search the ecosystem first and assess whether a mature implementation can be adopted or extended, instead of starting from zero. When a closely matching project exists, recommend adopting it directly; reassess the decision when key constraints such as platform or data boundaries change.
-2. **Current-state analysis** (code archaeology) — analyze the structure, data flow, and existing engineering conventions. Suggest a code index (CodeGraph) when useful, only with your consent.
-3. **Design review** (design approval) — define goals, non-goals, acceptance criteria, and module boundaries in a design spec. Ask separately only about choices that can change direction; use reasoned defaults for non-blocking details. **No coding until the design passes review.**
-4. **Verification plan** — before coding, define how "works" will be proven: layers and evidence requirements for static checks, automated tests, and real-run verification.
-5. **Minimal vertical slice** — first build one minimal end-to-end path through the real system (e.g., launch → user action → persistence → result display). **No full-scale rollout until the slice passes.**
-6. **Controlled implementation** — complete core contracts and integration paths serially by default; split long work into independently verifiable milestones, and parallelize only independent tasks, usually at most 2–3 workstreams. Report status only when completion, blockers, or the next action materially changes.
-7. **Acceptance and debugging** — verify the main flow first, then boundaries and failure paths; re-read or inspect diffs after material writes, reconcile every approved acceptance criterion, and attach evidence. After two failures on one path, distinguish code, environment, permission, and tool failures before trying again.
-8. **Release and learning** — check for sensitive data and temp artifacts, document what is verified vs. unverified and the rollback path; only capture lessons worth reusing.
+1. **Inspect what already exists.** Reuse modules, interfaces, dependencies, tests, and prior decisions that fit the current project.
+2. **Search externally only for real selection.** For a new project, important new dependency, new custom capability, or a genuine mature-solution-vs-build choice, make a GitHub reuse decision: adopt, adopt and extend, borrow, or build.
+3. **Do not block routine work on search.** Copy, small fixes, and local extensions of an existing implementation do not stall because GitHub is unavailable. If real selection research is incomplete, disclose that limit rather than presenting custom work as verified.
 
-### Five gates
+### Design, implementation, and acceptance happen when needed
 
-1. No reuse decision → no custom building.
-2. No design approval → no code.
-3. No proven vertical slice → no expanded parallelism.
-4. No criterion-by-criterion reconciliation and evidence → no "done".
-5. No security and release check → no shipping.
+Complex work first defines goals, non-goals, acceptance, boundaries, and failure behavior, then gets approval. Small, clear work can confirm its goal and acceptance in chat. For a real cross-boundary system, prove a minimal vertical slice first; do not manufacture a “whole-system path” for a small task.
 
-### Lines it holds
+The main agent owns risk, authorization, interface consistency, integration, and acceptance. A subagent’s “done” is not delivery: the main agent independently inspects the artifact and runs the selected verification. In delegated or cross-role work, subagents inherit the established strategy.
 
-- Secrets are read from environment variables only, never written into code, logs, or chat.
-- If the user says "read-only, don't touch files", not a single file is created.
-- Without explicit user consent, nothing is committed, pushed, or released.
+### Tests are not one fixed gate
+
+Enough makes three separate decisions:
+
+1. **Is current evidence enough?** Use tests, type/static checks, builds, startup, or real scenarios to prove observable results, invariants, and credible failures. Do not add a test when evidence is already sufficient.
+2. **Is a permanent test worth adding?** Add one only when there is repeatable real risk, a stable observation boundary, an independent expectation, and ongoing regression value. Otherwise use a temporary diagnostic, smoke test, integration run, or repeatable manual step.
+3. **Should tests come first?** Use TDD only when the user requests it, or when the contract is clear, counterexamples are stable, and test-first work brings a concrete constraint benefit. A behavior test added after implementation can still be valid.
+
+Mocks, automated tests, successful builds, and real-environment verification are different evidence strengths; none substitutes for the others by name alone.
+
+### High risk is not automatic execution authority
+
+External writes, security, privacy, money, deployment, accounts, production data, and industrial devices are DEEP. Enough requires a clear target, authorization, irreversible impact, and remedy, then chooses proportionate safeguards such as least privilege, dry runs, state queries, controlled canaries, recovery, and exceptional-case verification. That is not permission to make a real call, release, or deployment.
 
 ## What problems does it solve?
 
 | Pain point | How Enough addresses it | Mechanism |
 | --- | --- | --- |
-| Wasted effort | Mandatory GitHub search before building; recommend adopting existing projects | Step 1 + Gate 1 |
-| Wrong direction found late | Design review before coding; one key question at a time | Step 3 + Gate 2 |
-| Everything at once, nothing works | Prove a minimal vertical slice before controlled parallelism | Steps 5–6 + Gate 3 |
-| Fake tests, fake completion | Reconcile every acceptance criterion, verify writes landed, and distinguish mocks from real verification | Steps 4, 7 + Gate 4 |
-| Release incidents | Pre-release checks for secrets, temp files, debug configs | Step 8 + Gate 5 |
-| The same bug forever | Two failed fixes → root-cause analysis, no guessing | Step 7 |
-| Overconfident AI | Completion report must separate "verified / partially verified / unverified" | Step 8 |
+| Wasted effort | Inspect existing capability first; compare mature options only when real selection is needed | Reuse first |
+| Wrong direction late | Approve only complex decisions that truly change scope | Design when needed |
+| Everything at once, nothing works | Prove a minimal vertical slice when a real cross-boundary path exists | Core contracts and integration first |
+| Fake tests, fake completion | Distinguish mocks, tests, builds, and real runs; reconcile each acceptance item | Evidence driven |
+| Release incidents | Apply controlled verification and recovery to the specific DEEP risk | Risk-proportionate safeguards |
+| The same bug forever | After two failures on one path, classify the root cause before retrying | Stop guessing |
+| Process too heavy | FAST stays local; NORMAL and DEEP use only proportionate actions | FAST / NORMAL / DEEP |
+| Tests for tests’ sake | Permanent tests and TDD are separate value decisions | Three verification decisions |
 
-## Real case: what it prevented
+## Real cases: what it prevented
 
 **A user wanted an RSS reader and wrote zero lines of code.**
-The request: "A Windows-local RSS reader: multi-source subscription, keyword filtering, scheduled refresh, one-click install." Instead of coding immediately, Enough searched GitHub first — RSS Guard covered all four requirements natively, was actively maintained, and shipped official Windows installers. Recommendation: adopt it directly. Result: zero code, requirement met the same day. That is "reuse first" in action.
+A Windows-local RSS reader with multi-source subscriptions, keyword filtering, scheduled refresh, and one-click install is a real product-selection question. Enough’s reuse decision found that RSS Guard covered the core needs, so it recommended trying the mature project instead of building merely to write code. See the [RSS Guard reuse decision](examples/reuse-decision-rss-guard.md).
 
-In a second end-to-end case, an “advanced journal” became a native Android, local-only app with system authentication. Enough reassessed its reuse decision when those constraints changed, moved from “extend an existing project” to “borrow the data model and build natively,” then delivered through a vertical slice and verifiable milestones. The case also preserves unresolved migration-test and documentation-write gaps instead of hiding them; see the [Mind Journal end-to-end case](examples/mind-journal-end-to-end.md).
+In another anonymized case, an “advanced journal” became a native Android, local-only app with system authentication. The reuse decision changed from “extend an existing project” to “borrow the data model and build natively.” Only then did work proceed through a minimal vertical slice and milestones; migration-test and documentation-write gaps remained explicitly visible in the acceptance record. See the [Mind Journal end-to-end case](examples/mind-journal-end-to-end.md).
 
-More input → output examples in [examples/](examples/).
+More input → output examples are in [examples/](examples/). Materials marked v0.1 are retained as historical process records; current behavior is defined by this page and `skills/enough/SKILL.md`.
 
 ## Quick start
 
-**One-command install (recommended, official GitHub CLI)**:
+**One-command install (official GitHub CLI)**:
 
 ```bash
 gh skill install zhizhixia/enough enough --agent codex --scope user
 ```
-
-`--agent` supports 40+ clients (claude-code, opencode, cursor, gemini-cli, etc.); `--scope user` makes it global. Update later with `gh skill update enough`.
 
 **Universal installer (skills.sh)**:
 
@@ -127,37 +114,36 @@ gh skill install zhizhixia/enough enough --agent codex --scope user
 npx skills add zhizhixia/enough --yes
 ```
 
-**Manual install (zero dependencies)**: copy the `skills/enough/` folder into your client's skills directory (for Codex: `~/.codex/skills/enough/`, including `SKILL.md`, `references/`, and `agents/`) and restart the client.
+**Manual install (zero dependencies)**: copy `skills/enough/` into your client’s skills directory, keeping `SKILL.md`, `references/`, and `agents/`. For Codex, for example, use `~/.codex/skills/enough/`. Then restart the client or refresh its skills list as required.
 
-**Usage**: say "按我的开发流程推进 XXX" or simply describe a new project, feature, or high-risk fix — Enough triggers automatically.
+> The standalone repository provides Enough’s core workflow and bundled references. It **does not** automatically install Hermes’s global natural-language routing rules or companion Skills such as brainstorming, verification-planning, and CodeGraph. Clients also differ in automatic triggering: when auto-routing is available, describe the software task naturally; when an explicit call is needed, use `Use $enough to proceed with risk-based, reuse-first, evidence-driven delivery: <task>`, or that client’s equivalent explicit Skill syntax.
 
-**Optional dependencies**: brainstorming, verification-planning, Trellis, CodeGraph, etc. The best experience comes with them installed; without them, Enough degrades gracefully to a simplified flow.
+If an optional companion capability is missing, Enough uses an equivalent simplified step instead of abandoning the task.
 
 ## Who is it for?
 
-- Developers who use AI for coding but want it to be more reliable.
-- Solo maintainers juggling several projects who do not want to reinvent wheels.
-- Anyone whose projects touch real devices, real accounts, or real data and cannot afford "good enough".
-- Beginners who want to build good habits from day one.
+- Developers using AI for code who want it to be more reliable.
+- Maintainers of existing projects who do not want every request to reinvent a wheel.
+- Anyone working with real accounts, data, migrations, or external state who cannot accept “close enough.”
+- Beginners who want good habits without a heavyweight process for every edit.
 
 ## How it compares to other methodologies
 
-Existing AI development methodologies solve problems at different layers. Enough positions itself as "minimal workflow guidance":
+Enough is “risk-proportionate workflow guidance,” not a preset-gate system or a full project-management framework.
 
 | Dimension | **Enough** | Superpowers | OpenSpec / Spec Kit |
 | --- | --- | --- | --- |
-| Install | Copy a folder, 10 seconds | Install plugin + skills library, adapted per tool | npm CLI + spec directory init |
-| Size | 4 files, 300+ lines | Dozens of skills and scripts | CLI tool + spec directory structure |
-| Dependencies | Zero dependencies, zero config | Requires the host tool's plugin mechanism | Requires Node 20+, driven by CLI |
-| Positioning | Workflow orchestration and gates | Full methodology + skill system | Spec-driven development framework |
-| Portability | Plain Markdown, readable by any AI tool | Adapted separately per tool | Tied to the CLI environment |
-| Reuse-first | Hard gate on the first turn, forces open-source evaluation | Not enforced | Not enforced |
-| Light tasks | Fast path, no ceremony for small edits | Has a lightweight path | Still runs the full spec flow |
-| Missing capabilities | Degrades gracefully to a simplified flow | Depends on skills suite completeness | N/A, CLI is a hard dependency |
+| Positioning | Risk routing, reuse, and evidence decisions | Full methodology + skill system | Spec-driven development framework |
+| Light work | FAST runs only the nearest necessary checks | Depends on installed workflows | Usually still has a spec process |
+| External search | Only for real selection | Depends on the workflow | Not a core capability |
+| Design approval | Only for complex design or key boundaries | Depends on the workflow | Specification centered |
+| Tests | Evidence, permanent tests, and TDD decided separately | Depends on the workflow | Depends on project conventions |
+| Dependencies | Plain Markdown; usable standalone | Host-tool skill ecosystem | CLI plus specification directory |
+| Automatic trigger | Depends on the host client and installation | Depends on the host tool | CLI-command driven |
 
-**Choose Enough when**: you are an individual or small team, work across multiple tools (Codex / Claude Code / OpenCode), want critical gates with minimal ceremony, and especially value "evaluate existing wheels before building".
+**Choose Enough when** you are an individual or small team across multiple clients and want the AI to judge risk and existing capability before delivering with enough evidence.
 
-**Choose the alternatives when**: you need team-level spec management and cross-repo collaboration (OpenSpec / Spec Kit), or want a complete methodology suite out of the box (Superpowers). They don't conflict with Enough — Enough can sit on top of them, adding only workflow orchestration and decision gates.
+**Choose the alternatives when** you need team-scale specification management and cross-repository collaboration (OpenSpec / Spec Kit), or a complete methodology suite out of the box (Superpowers). They do not conflict; Enough can cooperate with existing capabilities but does not auto-install the rest of that ecosystem.
 
 ## License
 

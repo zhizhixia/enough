@@ -1,4 +1,6 @@
-# Show HN: Enough – a 300-line AI coding workflow skill with 5 hard gates
+# Show HN: Enough – a risk-based AI coding workflow skill
+
+> **v0.1 historical launch draft.** It preserves the former “five hard gates” framing. For v0.2 behavior, use the [README](../README.en.md) and `skills/enough/SKILL.md`: FAST / NORMAL / DEEP, external search only for real selection, approval only for complex design, and evidence-based verification.
 
 I got tired of AI assistants that happily reinvent wheels, start coding in the wrong direction, or claim “done” without real evidence. So I packaged the habits of a careful engineer into a tiny, tool-agnostic Agent Skill (works with Codex, Claude Code, OpenCode, and more).
 

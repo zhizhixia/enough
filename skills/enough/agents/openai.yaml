@@ -1,4 +1,4 @@
 interface:
   display_name: "Enough —— 够用就好"
-  short_description: "模型与开源轮子已经足够，只需关键引导的软件开发流程 Skill"
-  default_prompt: "使用 $enough 按开发流程推进这个软件任务。"
+  short_description: "按风险分级、复用优先和证据驱动推进软件任务"
+  default_prompt: "使用 $enough 按风险分级、复用优先和证据驱动的流程推进这个软件任务。"
