@@ -4,7 +4,7 @@ license: MIT
 description: "Use when editing software. Choose the right workflow."
 metadata:
   author: zhizhixia
-  version: "0.2.0"
+  version: "0.3.0"
   tags: agent-skills ai-coding workflow risk-based evidence-driven reuse-first codex claude-code opencode
 ---
 
